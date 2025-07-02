@@ -5,6 +5,7 @@ export type SpeechSettings = {
   voice: VoiceStyle;
   pitch: number;
   speed: number;
+  styleInstructions?: string;
 };
 
 export type SpeechHistoryItem = SpeechSettings & {

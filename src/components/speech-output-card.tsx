@@ -54,10 +54,21 @@ export function SpeechOutputCard({ speech, isGenerating }: SpeechOutputCardProps
     audio.addEventListener("ended", handleEnded);
 
     if (speech?.audioDataUri) {
-      audio.src = speech.audioDataUri;
-      audio.load();
+      // Force re-render and reload of audio element when speech item changes
+      const currentSrc = audio.src;
+      if (currentSrc !== speech.audioDataUri) {
+        audio.src = speech.audioDataUri;
+        audio.load();
+        setIsPlaying(false);
+        setProgress(0);
+        setCurrentTime(0);
+      }
     } else {
       audio.removeAttribute('src');
+      audio.load();
+      setIsPlaying(false);
+      setProgress(0);
+      setCurrentTime(0);
     }
 
     return () => {
@@ -69,7 +80,7 @@ export function SpeechOutputCard({ speech, isGenerating }: SpeechOutputCardProps
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
-    if (!audio || !audio.src) return;
+    if (!audio || !audio.src || duration === 0) return;
 
     if (isPlaying) {
       audio.pause();
@@ -118,9 +129,15 @@ export function SpeechOutputCard({ speech, isGenerating }: SpeechOutputCardProps
             <p className="text-muted-foreground">Generating your speech...</p>
           </div>
         ) : speech && speech.audioDataUri ? (
-          <div key={speech.id} className="space-y-6">
+          <div key={speech.id} className="space-y-4">
+             {speech.styleInstructions && (
+              <div className="p-4 rounded-lg bg-muted/50">
+                <h3 className="font-semibold mb-2">Style Instructions:</h3>
+                <p className="text-sm text-foreground/80 italic">"{speech.styleInstructions}"</p>
+              </div>
+            )}
             <div className="p-4 rounded-lg bg-muted/50">
-              <h3 className="font-semibold mb-2">Improved Text:</h3>
+              <h3 className="font-semibold mb-2">Resulting Text:</h3>
               <p className="text-sm text-foreground/80">{speech.improvedText}</p>
             </div>
             <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/50">

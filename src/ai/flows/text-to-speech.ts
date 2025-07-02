@@ -25,6 +25,7 @@ const voiceMap: Record<VoiceStyle, string> = {
 const TextToSpeechInputSchema = z.object({
   text: z.string().describe('The text to be converted to speech.'),
   voice: z.string().describe('The voice style to use for the speech.'),
+  styleInstructions: z.string().optional().describe('Instructions on how the text should be read (e.g., tone, style).'),
 });
 export type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
 
@@ -71,8 +72,10 @@ const textToSpeechFlow = ai.defineFlow(
     inputSchema: TextToSpeechInputSchema,
     outputSchema: TextToSpeechOutputSchema,
   },
-  async ({text, voice}) => {
+  async ({text, voice, styleInstructions}) => {
     const selectedVoice = voiceMap[voice as VoiceStyle] || 'algenib';
+    
+    const prompt = styleInstructions ? `${styleInstructions}\n\n${text}` : text;
 
     const { media } = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
@@ -84,7 +87,7 @@ const textToSpeechFlow = ai.defineFlow(
           },
         },
       },
-      prompt: text,
+      prompt: prompt,
     });
     
     if (!media) {

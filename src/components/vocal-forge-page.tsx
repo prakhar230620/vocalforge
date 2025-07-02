@@ -24,7 +24,11 @@ export default function VocalForgePage() {
     try {
       const { improvedText } = await improveTextForSpeech({ text: settings.text });
       
-      const { audioDataUri } = await textToSpeech({ text: improvedText, voice: settings.voice });
+      const { audioDataUri } = await textToSpeech({ 
+        text: improvedText, 
+        voice: settings.voice,
+        styleInstructions: settings.styleInstructions
+      });
       
       const newSpeech: SpeechHistoryItem = {
         ...settings,
