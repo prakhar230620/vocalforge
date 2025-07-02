@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import * as lamejs from 'lamejs';
 
 import { Header } from '@/components/header';
 import { HistorySidebar } from '@/components/history-sidebar';
@@ -22,23 +23,73 @@ export default function VocalForgePage() {
   const { toast } = useToast();
   const [isSheetOpen, setSheetOpen] = useState(false);
 
+  function encodePcmToMp3(pcmDataUri: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+        try {
+            const pcmBase64 = pcmDataUri.substring(pcmDataUri.indexOf(',') + 1);
+            const pcmString = atob(pcmBase64);
+            const pcmData = new Uint8Array(pcmString.length);
+            for (let i = 0; i < pcmString.length; i++) {
+                pcmData[i] = pcmString.charCodeAt(i);
+            }
+
+            const sampleRate = parseInt(pcmDataUri.match(/rate=(\d+)/)?.[1] || "24000");
+            const channels = 1;
+
+            const mp3Encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128);
+            const samples = new Int16Array(pcmData.buffer);
+
+            const mp3DataChunks = [];
+            const blockSize = 1152;
+
+            for (let i = 0; i < samples.length; i += blockSize) {
+                const sampleChunk = samples.subarray(i, i + blockSize);
+                const mp3buf = mp3Encoder.encodeBuffer(sampleChunk);
+                if (mp3buf.length > 0) {
+                    mp3DataChunks.push(mp3buf);
+                }
+            }
+            const mp3buf = mp3Encoder.flush();
+            if (mp3buf.length > 0) {
+                mp3DataChunks.push(mp3buf);
+            }
+
+            const mp3Blob = new Blob(mp3DataChunks, {type: 'audio/mpeg'});
+            const reader = new FileReader();
+            
+            reader.onloadend = () => {
+                resolve(reader.result as string);
+            };
+            reader.onerror = (error) => {
+                reject(error);
+            };
+            
+            reader.readAsDataURL(mp3Blob);
+        } catch (error) {
+            reject(error);
+        }
+    });
+  }
+
   const handleGenerateSpeech = async (settings: SpeechSettings) => {
     setIsGenerating(true);
     setCurrentSpeech(null);
     try {
       const { improvedText } = await improveTextForSpeech({ text: settings.text });
       
-      const { audioDataUri } = await textToSpeech({ 
+      const { audioDataUri: rawPcmDataUri } = await textToSpeech({ 
         text: improvedText, 
         voice: settings.voice,
         styleInstructions: settings.styleInstructions,
       });
+
+      const mp3DataUri = await encodePcmToMp3(rawPcmDataUri);
       
       const newSpeech: SpeechHistoryItem = {
         ...settings,
         id: Date.now(),
         improvedText,
-        audioDataUri,
+        audioDataUri: mp3DataUri,
         createdAt: new Date(),
       };
       
