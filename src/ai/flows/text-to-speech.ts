@@ -14,12 +14,12 @@ import wav from 'wav';
 import type { VoiceStyle } from '@/types';
 
 const voiceMap: Record<VoiceStyle, string> = {
-    alloy: 'Algenib',
-    echo: 'Achernar',
-    fable: 'Antares',
-    onyx: 'Canopus',
-    nova: 'Capella',
-    shimmer: 'Arcturus',
+    alloy: 'algenib',
+    echo: 'achernar',
+    fable: 'gacrux',
+    onyx: 'rasalgethi',
+    nova: 'schedar',
+    shimmer: 'zubenelgenubi',
 };
 
 const TextToSpeechInputSchema = z.object({
@@ -72,7 +72,7 @@ const textToSpeechFlow = ai.defineFlow(
     outputSchema: TextToSpeechOutputSchema,
   },
   async ({text, voice}) => {
-    const selectedVoice = voiceMap[voice as VoiceStyle] || 'Algenib';
+    const selectedVoice = voiceMap[voice as VoiceStyle] || 'algenib';
 
     const { media } = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
