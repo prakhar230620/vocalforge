@@ -75,9 +75,9 @@ const textToSpeechFlow = ai.defineFlow(
           voiceConfig: {
             prebuiltVoiceConfig: { voiceName: voice },
           },
-          speakingRate: speed,
-          pitch: pitch,
         },
+        speakingRate: speed,
+        pitch: pitch,
       },
       prompt: prompt,
     });
