@@ -35,27 +35,27 @@ export function SpeechOutputCard({ speech, isGenerating }: SpeechOutputCardProps
 
     const setAudioTime = () => {
       setCurrentTime(audio.currentTime);
-      setProgress((audio.currentTime / audio.duration) * 100);
+      if (audio.duration > 0) {
+        setProgress((audio.currentTime / audio.duration) * 100);
+      }
     };
 
     const handleEnded = () => {
       setIsPlaying(false);
       setProgress(0);
       setCurrentTime(0);
-      audio.currentTime = 0;
+      if(audio) {
+        audio.currentTime = 0;
+      }
     };
 
     audio.addEventListener("loadedmetadata", setAudioData);
     audio.addEventListener("timeupdate", setAudioTime);
     audio.addEventListener("ended", handleEnded);
 
-    setIsPlaying(false);
-    setProgress(0);
-    setCurrentTime(0);
-    setDuration(0);
-    
     if (speech?.audioDataUri) {
       audio.src = speech.audioDataUri;
+      audio.load();
     } else {
       audio.removeAttribute('src');
     }
@@ -118,7 +118,7 @@ export function SpeechOutputCard({ speech, isGenerating }: SpeechOutputCardProps
             <p className="text-muted-foreground">Generating your speech...</p>
           </div>
         ) : speech && speech.audioDataUri ? (
-          <div className="space-y-6">
+          <div key={speech.id} className="space-y-6">
             <div className="p-4 rounded-lg bg-muted/50">
               <h3 className="font-semibold mb-2">Improved Text:</h3>
               <p className="text-sm text-foreground/80">{speech.improvedText}</p>
