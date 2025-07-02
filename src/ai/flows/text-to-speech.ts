@@ -44,10 +44,10 @@ async function toWav(
 
     const bufs: any[] = [];
     writer.on('error', reject);
-    writer.on('data', function (d) {
-      bufs.push(d);
+    writer.on('data', (chunk) => {
+      bufs.push(chunk);
     });
-    writer.on('end', function () {
+    writer.on('end', () => {
       resolve(Buffer.concat(bufs).toString('base64'));
     });
 
