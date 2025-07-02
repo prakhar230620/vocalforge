@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import * as lamejs from 'lamejs';
+import lamejs from 'lamejs';
 
 import { Header } from '@/components/header';
 import { HistorySidebar } from '@/components/history-sidebar';
