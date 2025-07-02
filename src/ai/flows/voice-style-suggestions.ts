@@ -9,7 +9,7 @@
  * - SuggestVoiceStyleOutput - The return type for the suggestVoiceStyle function.
  */
 
-import {ai} from '@/ai/genkit';
+import {getAI} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SuggestVoiceStyleInputSchema = z.object({
@@ -28,7 +28,7 @@ export async function suggestVoiceStyle(input: SuggestVoiceStyleInput): Promise<
   return suggestVoiceStyleFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const prompt = getAI().definePrompt({
   name: 'suggestVoiceStylePrompt',
   input: {schema: SuggestVoiceStyleInputSchema},
   output: {schema: SuggestVoiceStyleOutputSchema},
@@ -39,7 +39,7 @@ Text: {{{text}}}
 Suggestions:`,
 });
 
-const suggestVoiceStyleFlow = ai.defineFlow(
+const suggestVoiceStyleFlow = getAI().defineFlow(
   {
     name: 'suggestVoiceStyleFlow',
     inputSchema: SuggestVoiceStyleInputSchema,

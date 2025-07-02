@@ -1,0 +1,31 @@
+<svg width="2048" height="2732" viewBox="0 0 2048 2732" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient -->
+  <rect width="2048" height="2732" fill="url(#paint0_linear)" />
+  
+  <!-- VocalForge Logo - Microphone Icon -->
+  <g transform="translate(768, 1024) scale(3.2)">
+    <!-- Microphone base -->
+    <rect x="56" y="32" width="48" height="96" rx="24" fill="white" />
+    
+    <!-- Microphone stand -->
+    <path d="M80 144L80 176" stroke="white" stroke-width="16" stroke-linecap="round" />
+    
+    <!-- Microphone base -->
+    <path d="M40 176L120 176" stroke="white" stroke-width="16" stroke-linecap="round" />
+    
+    <!-- Sound waves -->
+    <path d="M136 80C136 53.49 114.51 32 88 32C61.49 32 40 53.49 40 80" stroke="white" stroke-width="8" stroke-linecap="round" />
+    <path d="M152 80C152 44.65 123.35 16 88 16C52.65 16 24 44.65 24 80" stroke="white" stroke-width="8" stroke-linecap="round" />
+  </g>
+  
+  <!-- Text: VocalForge -->
+  <text x="1024" y="1600" font-family="Arial, sans-serif" font-size="96" font-weight="bold" fill="white" text-anchor="middle">VocalForge</text>
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="2048" y2="2732" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+  </defs>
+</svg>

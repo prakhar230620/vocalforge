@@ -1,5 +1,6 @@
 import { MicVocal } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
 
 export function Header() {
   return (
@@ -10,6 +11,7 @@ export function Header() {
           <span className="font-bold text-lg">VocalForge</span>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
+          <PWAInstallPrompt />
           <ThemeToggle />
         </div>
       </div>

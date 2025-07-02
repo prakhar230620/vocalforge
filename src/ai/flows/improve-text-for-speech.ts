@@ -8,7 +8,7 @@
  * - ImproveTextForSpeechOutput - The return type for the improveTextForSpeech function.
  */
 
-import {ai} from '@/ai/genkit';
+import {getAI} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ImproveTextForSpeechInputSchema = z.object({
@@ -25,7 +25,7 @@ export async function improveTextForSpeech(input: ImproveTextForSpeechInput): Pr
   return improveTextForSpeechFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const prompt = getAI().definePrompt({
   name: 'improveTextForSpeechPrompt',
   input: {schema: ImproveTextForSpeechInputSchema},
   output: {schema: ImproveTextForSpeechOutputSchema},
@@ -39,7 +39,7 @@ Original Text: {{{text}}}
 Improved Text:`,  
 });
 
-const improveTextForSpeechFlow = ai.defineFlow(
+const improveTextForSpeechFlow = getAI().defineFlow(
   {
     name: 'improveTextForSpeechFlow',
     inputSchema: ImproveTextForSpeechInputSchema,
