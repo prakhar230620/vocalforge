@@ -16,8 +16,6 @@ const TextToSpeechInputSchema = z.object({
   text: z.string().describe('The text to be converted to speech.'),
   voice: z.string().describe('The voice style to use for the speech.'),
   styleInstructions: z.string().optional().describe('Instructions on how the text should be read (e.g., tone, style).'),
-  pitch: z.number().optional().describe('The pitch of the voice. Range: -20.0 to 20.0. 0.0 is default.'),
-  speed: z.number().optional().describe('The speaking rate. Range: 0.25 to 4.0. 1.0 is default.'),
 });
 export type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
 
@@ -64,7 +62,7 @@ const textToSpeechFlow = ai.defineFlow(
     inputSchema: TextToSpeechInputSchema,
     outputSchema: TextToSpeechOutputSchema,
   },
-  async ({text, voice, styleInstructions, pitch, speed}) => {
+  async ({text, voice, styleInstructions}) => {
     const prompt = styleInstructions ? `${styleInstructions}\n\n${text}` : text;
 
     const { media } = await ai.generate({
@@ -75,8 +73,6 @@ const textToSpeechFlow = ai.defineFlow(
           voiceConfig: {
             prebuiltVoiceConfig: { voiceName: voice },
           },
-          speakingRate: speed,
-          pitch: pitch,
         },
       },
       prompt: prompt,

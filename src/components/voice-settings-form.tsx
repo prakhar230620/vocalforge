@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Loader2, Wand2, Bot, User, Waves, BookOpenText, Diamond, Sparkles, Star, Mic, Moon, Drama, Ghost } from "lucide-react";
@@ -24,8 +23,6 @@ const formSchema = z.object({
   text: z.string().min(10, { message: "Please enter at least 10 characters." }).max(2000, { message: "Text cannot exceed 2000 characters." }),
   voice: z.enum(["algenib", "achernar", "gacrux", "rasalgethi", "schedar", "zubenelgenubi", "vindemiatrix", "umbriel", "puck", "charon"]),
   styleInstructions: z.string().max(500, { message: "Style instructions cannot exceed 500 characters." }).optional(),
-  pitch: z.number().min(-20.0).max(20.0),
-  speed: z.number().min(0.25).max(4.0),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -78,8 +75,6 @@ export function VoiceSettingsForm({ isGenerating, onGenerate, initialData }: Voi
       text: initialData?.text ?? "नमस्ते! वोकलफोर्ज टेक्स्ट-टू-स्पीच इंजन के परीक्षण में आपका स्वागत है। मुझे उम्मीद है कि आप जेनरेट किए गए ऑडियो का आनंद लेंगे।",
       voice: getInitialVoice(),
       styleInstructions: initialData?.styleInstructions ?? 'एक गर्म और मैत्रीपूर्ण स्वर में जोर से पढ़ें:',
-      pitch: initialData?.pitch ?? 0.0,
-      speed: initialData?.speed ?? 1.0,
     },
   });
 
@@ -182,43 +177,6 @@ export function VoiceSettingsForm({ isGenerating, onGenerate, initialData }: Voi
                 </FormItem>
               )}
             />
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <FormField
-                control={form.control}
-                name="pitch"
-                render={({ field: { value, onChange } }) => (
-                  <FormItem>
-                    <FormLabel>Pitch ({value.toFixed(1)})</FormLabel>
-                    <FormControl>
-                        <Slider
-                            defaultValue={[value]}
-                            min={-10} max={10} step={0.5}
-                            onValueChange={(vals) => onChange(vals[0])}
-                            aria-label="Pitch"
-                        />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="speed"
-                render={({ field: { value, onChange } }) => (
-                  <FormItem>
-                    <FormLabel>Speed ({value.toFixed(1)}x)</FormLabel>
-                    <FormControl>
-                        <Slider
-                            defaultValue={[value]}
-                            min={0.5} max={2.0} step={0.1}
-                            onValueChange={(vals) => onChange(vals[0])}
-                            aria-label="Speed"
-                        />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
 
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isGenerating}>
               {isGenerating ? (

@@ -13,8 +13,6 @@ export type VoiceStyle =
 export type SpeechSettings = {
   text: string;
   voice: VoiceStyle;
-  pitch: number;
-  speed: number;
   styleInstructions?: string;
 };
 

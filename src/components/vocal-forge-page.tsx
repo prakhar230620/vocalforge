@@ -28,8 +28,6 @@ export default function VocalForgePage() {
         text: improvedText, 
         voice: settings.voice,
         styleInstructions: settings.styleInstructions,
-        pitch: settings.pitch,
-        speed: settings.speed,
       });
       
       const newSpeech: SpeechHistoryItem = {
