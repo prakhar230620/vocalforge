@@ -10,7 +10,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import wav from 'wav';
+import lamejs from 'lamejs';
 
 const TextToSpeechInputSchema = z.object({
   text: z.string().describe('The text to be converted to speech.'),
@@ -20,7 +20,7 @@ const TextToSpeechInputSchema = z.object({
 export type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
 
 const TextToSpeechOutputSchema = z.object({
-  audioDataUri: z.string().describe("The generated speech as a WAV data URI. Expected format: 'data:audio/wav;base64,<encoded_data>'."),
+  audioDataUri: z.string().describe("The generated speech as a MP3 data URI. Expected format: 'data:audio/mpeg;base64,<encoded_data>'."),
 });
 export type TextToSpeechOutput = z.infer<typeof TextToSpeechOutputSchema>;
 
@@ -29,31 +29,31 @@ export async function textToSpeech(input: TextToSpeechInput): Promise<TextToSpee
   return textToSpeechFlow(input);
 }
 
-async function toWav(
+async function toMp3(
   pcmData: Buffer,
   channels = 1,
-  rate = 24000,
-  sampleWidth = 2
+  sampleRate = 24000
 ): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const writer = new wav.Writer({
-      channels,
-      sampleRate: rate,
-      bitDepth: sampleWidth * 8,
-    });
+  const mp3Encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128); // 128 kbps
+  
+  // PCM data from Gemini is 16-bit, so 2 bytes per sample.
+  const samples = new Int16Array(pcmData.buffer, pcmData.byteOffset, pcmData.length / Int16Array.BYTES_PER_ELEMENT);
 
-    const bufs: any[] = [];
-    writer.on('error', reject);
-    writer.on('data', (chunk) => {
-      bufs.push(chunk);
-    });
-    writer.on('end', () => {
-      resolve(Buffer.concat(bufs).toString('base64'));
-    });
-
-    writer.write(pcmData);
-    writer.end();
-  });
+  const mp3Data: Buffer[] = [];
+  const blockSize = 1152; // Encoder block size
+  for (let i = 0; i < samples.length; i += blockSize) {
+    const sampleChunk = samples.subarray(i, i + blockSize);
+    const mp3buf = mp3Encoder.encodeBuffer(sampleChunk);
+    if (mp3buf.length > 0) {
+      mp3Data.push(Buffer.from(mp3buf));
+    }
+  }
+  const mp3buf = mp3Encoder.flush();
+  if (mp3buf.length > 0) {
+    mp3Data.push(Buffer.from(mp3buf));
+  }
+  
+  return Buffer.concat(mp3Data).toString('base64');
 }
 
 const textToSpeechFlow = ai.defineFlow(
@@ -87,10 +87,10 @@ const textToSpeechFlow = ai.defineFlow(
       'base64'
     );
     
-    const wavBase64 = await toWav(audioBuffer);
+    const mp3Base64 = await toMp3(audioBuffer);
     
     return {
-      audioDataUri: `data:audio/wav;base64,${wavBase64}`,
+      audioDataUri: `data:audio/mpeg;base64,${mp3Base64}`,
     };
   }
 );

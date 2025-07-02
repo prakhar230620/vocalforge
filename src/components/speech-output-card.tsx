@@ -94,7 +94,7 @@ export function SpeechOutputCard({ speech, isGenerating }: SpeechOutputCardProps
     if (!speech?.audioDataUri) return;
     const link = document.createElement('a');
     link.href = speech.audioDataUri;
-    link.download = `VocalForge_${speech.id}.wav`;
+    link.download = `VocalForge_${speech.id}.mp3`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -151,7 +151,7 @@ export function SpeechOutputCard({ speech, isGenerating }: SpeechOutputCardProps
             </div>
             <Button className="w-full" onClick={handleDownload} disabled={!speech.audioDataUri}>
               <Download className="mr-2 h-4 w-4" />
-              Download WAV
+              Download MP3
             </Button>
           </div>
         ) : (
