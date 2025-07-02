@@ -1,39 +1,35 @@
 {
   "version": 2,
-  "routes": [
-    {
-      "src": "/service-worker.js",
-      "dest": "/_next/static/service-worker.js",
-      "headers": {
-        "cache-control": "public, max-age=43200, immutable",
-        "Service-Worker-Allowed": "/"
-      }
-    },
-    {
-      "src": "/manifest.json",
-      "headers": {
-        "Content-Type": "application/manifest+json",
-        "cache-control": "public, max-age=43200, immutable"
-      }
-    },
-    {
-      "src": "/(.*)",
-      "headers": {
-        "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "DENY",
-        "X-XSS-Protection": "1; mode=block"
-      },
-      "continue": true
-    },
-    {
-      "src": "/.well-known/(.*)",
-      "headers": {
-        "Content-Type": "application/json"
-      },
-      "continue": true
-    }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
   "headers": [
+    {
+      "source": "/service-worker.js",
+      "headers": [
+        {
+          "key": "cache-control",
+          "value": "public, max-age=43200, immutable"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        },
+        {
+          "key": "cache-control",
+          "value": "public, max-age=43200, immutable"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
@@ -52,6 +48,15 @@
       ]
     },
     {
+      "source": "/.well-known/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
       "source": "/icons/(.*)",
       "headers": [
         {
@@ -61,9 +66,6 @@
       ]
     }
   ],
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "framework": "nextjs",
   "rewrites": [
     {
       "source": "/service-worker.js",
