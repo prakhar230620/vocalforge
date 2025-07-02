@@ -16,13 +16,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, Wand2, Bot, User, Waves, BookOpenText, Diamond, Sparkles, Star } from "lucide-react";
+import { Loader2, Wand2, Bot, User, Waves, BookOpenText, Diamond, Sparkles, Star, Mic, Moon, Drama, Ghost } from "lucide-react";
 import type { SpeechHistoryItem, VoiceStyle } from "@/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const formSchema = z.object({
   text: z.string().min(10, { message: "Please enter at least 10 characters." }).max(2000, { message: "Text cannot exceed 2000 characters." }),
-  voice: z.enum(["alloy", "echo", "fable", "onyx", "nova", "shimmer"]),
+  voice: z.enum(["algenib", "achernar", "gacrux", "rasalgethi", "schedar", "zubenelgenubi", "vindemiatrix", "umbriel", "puck", "charon"]),
   styleInstructions: z.string().max(500, { message: "Style instructions cannot exceed 500 characters." }).optional(),
   pitch: z.number().min(0.5).max(2.0),
   speed: z.number().min(0.5).max(2.0),
@@ -31,12 +31,16 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const voiceOptions: { value: VoiceStyle, label: string, icon: React.ElementType }[] = [
-    { value: 'alloy', label: 'Alloy', icon: User },
-    { value: 'echo', label: 'Echo', icon: Waves },
-    { value: 'fable', label: 'Fable', icon: BookOpenText },
-    { value: 'onyx', label: 'Onyx', icon: Diamond },
-    { value: 'nova', label: 'Nova', icon: Sparkles },
-    { value: 'shimmer', label: 'Shimmer', icon: Star },
+    { value: 'algenib', label: 'Algenib', icon: User },
+    { value: 'achernar', label: 'Achernar', icon: Waves },
+    { value: 'gacrux', label: 'Gacrux', icon: BookOpenText },
+    { value: 'rasalgethi', label: 'Rasalgethi', icon: Diamond },
+    { value: 'schedar', label: 'Schedar', icon: Sparkles },
+    { value: 'zubenelgenubi', label: 'Zubenelgenubi', icon: Star },
+    { value: 'vindemiatrix', label: 'Vindemiatrix', icon: Mic },
+    { value: 'umbriel', label: 'Umbriel', icon: Moon },
+    { value: 'puck', label: 'Puck', icon: Drama },
+    { value: 'charon', label: 'Charon', icon: Ghost },
 ];
 
 const stylePresets = [
@@ -53,12 +57,27 @@ interface VoiceSettingsFormProps {
 }
 
 export function VoiceSettingsForm({ isGenerating, onGenerate, initialData }: VoiceSettingsFormProps) {
+  const oldVoiceMap: Record<string, VoiceStyle> = {
+    alloy: 'algenib',
+    echo: 'achernar',
+    fable: 'gacrux',
+    onyx: 'rasalgethi',
+    nova: 'schedar',
+    shimmer: 'zubenelgenubi',
+  };
+
+  const getInitialVoice = (): VoiceStyle => {
+    const initialVoice = initialData?.voice;
+    if (!initialVoice) return 'algenib';
+    return oldVoiceMap[initialVoice] || (initialVoice as VoiceStyle);
+  }
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      text: initialData?.text ?? "Hello, world! This is a test of the VocalForge text-to-speech engine. I hope you enjoy the generated audio.",
-      voice: initialData?.voice ?? "alloy",
-      styleInstructions: initialData?.styleInstructions ?? 'Read aloud in a warm and friendly tone:',
+      text: initialData?.text ?? "नमस्ते! वोकलफोर्ज टेक्स्ट-टू-स्पीच इंजन के परीक्षण में आपका स्वागत है। मुझे उम्मीद है कि आप जेनरेट किए गए ऑडियो का आनंद लेंगे।",
+      voice: getInitialVoice(),
+      styleInstructions: initialData?.styleInstructions ?? 'एक गर्म और मैत्रीपूर्ण स्वर में जोर से पढ़ें:',
       pitch: initialData?.pitch ?? 1.0,
       speed: initialData?.speed ?? 1.0,
     },
@@ -132,7 +151,7 @@ export function VoiceSettingsForm({ isGenerating, onGenerate, initialData }: Voi
                     <RadioGroup
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      className="grid grid-cols-3 sm:grid-cols-6 gap-4"
+                      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"
                     >
                       <TooltipProvider>
                       {voiceOptions.map(opt => (
@@ -144,10 +163,10 @@ export function VoiceSettingsForm({ isGenerating, onGenerate, initialData }: Voi
                                 </FormControl>
                                 <FormLabel
                                     htmlFor={`voice-${opt.value}`}
-                                    className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary cursor-pointer transition-all gap-2"
+                                    className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary cursor-pointer transition-all gap-2 h-full"
                                 >
                                     <opt.icon className="h-6 w-6" />
-                                    <span className="text-sm">{opt.label}</span>
+                                    <span className="text-sm text-center">{opt.label}</span>
                                 </FormLabel>
                                 </FormItem>
                             </TooltipTrigger>

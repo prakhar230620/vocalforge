@@ -11,16 +11,6 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 import wav from 'wav';
-import type { VoiceStyle } from '@/types';
-
-const voiceMap: Record<VoiceStyle, string> = {
-    alloy: 'algenib',
-    echo: 'achernar',
-    fable: 'gacrux',
-    onyx: 'rasalgethi',
-    nova: 'schedar',
-    shimmer: 'zubenelgenubi',
-};
 
 const TextToSpeechInputSchema = z.object({
   text: z.string().describe('The text to be converted to speech.'),
@@ -73,8 +63,6 @@ const textToSpeechFlow = ai.defineFlow(
     outputSchema: TextToSpeechOutputSchema,
   },
   async ({text, voice, styleInstructions}) => {
-    const selectedVoice = voiceMap[voice as VoiceStyle] || 'algenib';
-    
     const prompt = styleInstructions ? `${styleInstructions}\n\n${text}` : text;
 
     const { media } = await ai.generate({
@@ -83,7 +71,7 @@ const textToSpeechFlow = ai.defineFlow(
         responseModalities: ['AUDIO'],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: selectedVoice },
+            prebuiltVoiceConfig: { voiceName: voice },
           },
         },
       },

@@ -1,4 +1,14 @@
-export type VoiceStyle = 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer';
+export type VoiceStyle =
+  | 'algenib'
+  | 'achernar'
+  | 'gacrux'
+  | 'rasalgethi'
+  | 'schedar'
+  | 'zubenelgenubi'
+  | 'vindemiatrix'
+  | 'umbriel'
+  | 'puck'
+  | 'charon';
 
 export type SpeechSettings = {
   text: string;
