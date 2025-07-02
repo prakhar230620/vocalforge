@@ -6,7 +6,7 @@ import { improveTextForSpeech } from '@/ai/flows/improve-text-for-speech';
 import { textToSpeech } from '@/ai/flows/text-to-speech';
 import type { SpeechHistoryItem, SpeechSettings } from '@/types';
 import { useToast } from "@/hooks/use-toast"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 
@@ -103,6 +103,7 @@ export default function VocalForgePage() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="p-0 w-[320px] sm:w-[350px]">
+                  <SheetTitle className="sr-only">History</SheetTitle>
                   {historySidebarComponent}
                 </SheetContent>
               </Sheet>
