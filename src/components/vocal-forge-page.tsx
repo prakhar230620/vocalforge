@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSpeechHistory } from '@/hooks/use-speech-history';
 import { improveTextForSpeech } from '@/ai/flows/improve-text-for-speech';
+import { textToSpeech } from '@/ai/flows/text-to-speech';
 import type { SpeechHistoryItem, SpeechSettings } from '@/types';
 import { useToast } from "@/hooks/use-toast"
 
@@ -23,10 +24,13 @@ export default function VocalForgePage() {
     try {
       const { improvedText } = await improveTextForSpeech({ text: settings.text });
       
+      const { audioDataUri } = await textToSpeech({ text: improvedText, voice: settings.voice });
+      
       const newSpeech: SpeechHistoryItem = {
         ...settings,
         id: Date.now(),
         improvedText,
+        audioDataUri,
         createdAt: new Date(),
       };
       
@@ -78,7 +82,7 @@ export default function VocalForgePage() {
              <VoiceSettingsForm
                 isGenerating={isGenerating}
                 onGenerate={handleGenerateSpeech}
-                key={currentSpeech?.id ?? 'new'} // Re-mounts the form when a history item is selected
+                key={currentSpeech?.id ?? 'new'}
                 initialData={currentSpeech}
              />
              <SpeechOutputCard speech={currentSpeech} isGenerating={isGenerating} />

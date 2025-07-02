@@ -11,4 +11,5 @@ export type SpeechHistoryItem = SpeechSettings & {
   id: number;
   improvedText: string;
   createdAt: Date;
+  audioDataUri?: string;
 };
