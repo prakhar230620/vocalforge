@@ -23,7 +23,7 @@ export function HistorySidebar({
   currentSpeechId,
 }: HistorySidebarProps) {
   return (
-    <aside className="hidden md:flex flex-col h-full bg-background border-r p-4 gap-4">
+    <aside className="flex flex-col h-full bg-background border-r p-4 gap-4">
        <div className="flex items-center gap-2">
         <History className="h-5 w-5 text-primary" />
         <h2 className="text-xl font-semibold">History</h2>

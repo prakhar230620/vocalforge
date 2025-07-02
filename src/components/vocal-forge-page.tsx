@@ -6,6 +6,9 @@ import { improveTextForSpeech } from '@/ai/flows/improve-text-for-speech';
 import { textToSpeech } from '@/ai/flows/text-to-speech';
 import type { SpeechHistoryItem, SpeechSettings } from '@/types';
 import { useToast } from "@/hooks/use-toast"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
 
 import { Header } from '@/components/header';
 import { HistorySidebar } from '@/components/history-sidebar';
@@ -17,6 +20,7 @@ export default function VocalForgePage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const { history, isLoading: isHistoryLoading, addSpeechItem, removeSpeechItem } = useSpeechHistory();
   const { toast } = useToast();
+  const [isSheetOpen, setSheetOpen] = useState(false);
 
   const handleGenerateSpeech = async (settings: SpeechSettings) => {
     setIsGenerating(true);
@@ -58,6 +62,7 @@ export default function VocalForgePage() {
   
   const handleSelectFromHistory = (item: SpeechHistoryItem) => {
     setCurrentSpeech(item);
+    setSheetOpen(false);
   };
 
   const handleDeleteFromHistory = async (id: number) => {
@@ -70,19 +75,38 @@ export default function VocalForgePage() {
       });
   };
 
+  const historySidebarComponent = (
+    <HistorySidebar
+      history={history}
+      isLoading={isHistoryLoading}
+      onSelect={handleSelectFromHistory}
+      onDelete={handleDeleteFromHistory}
+      currentSpeechId={currentSpeech?.id}
+    />
+  );
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
       <div className="flex-1 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] lg:grid-cols-[350px_1fr] gap-0 md:gap-8">
-          <HistorySidebar
-            history={history}
-            isLoading={isHistoryLoading}
-            onSelect={handleSelectFromHistory}
-            onDelete={handleDeleteFromHistory}
-            currentSpeechId={currentSpeech?.id}
-          />
+          <div className="hidden md:block">
+            {historySidebarComponent}
+          </div>
           <main className="p-4 md:p-8 md:pt-6 flex-1">
+            <div className="md:hidden mb-4">
+              <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline">
+                    <Menu className="h-4 w-4 mr-2" />
+                    View History
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="p-0 w-[320px] sm:w-[350px]">
+                  {historySidebarComponent}
+                </SheetContent>
+              </Sheet>
+            </div>
              <VoiceSettingsForm
                 isGenerating={isGenerating}
                 onGenerate={handleGenerateSpeech}
