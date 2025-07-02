@@ -24,8 +24,8 @@ const formSchema = z.object({
   text: z.string().min(10, { message: "Please enter at least 10 characters." }).max(2000, { message: "Text cannot exceed 2000 characters." }),
   voice: z.enum(["algenib", "achernar", "gacrux", "rasalgethi", "schedar", "zubenelgenubi", "vindemiatrix", "umbriel", "puck", "charon"]),
   styleInstructions: z.string().max(500, { message: "Style instructions cannot exceed 500 characters." }).optional(),
-  pitch: z.number().min(0.5).max(2.0),
-  speed: z.number().min(0.5).max(2.0),
+  pitch: z.number().min(-20.0).max(20.0),
+  speed: z.number().min(0.25).max(4.0),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -78,7 +78,7 @@ export function VoiceSettingsForm({ isGenerating, onGenerate, initialData }: Voi
       text: initialData?.text ?? "नमस्ते! वोकलफोर्ज टेक्स्ट-टू-स्पीच इंजन के परीक्षण में आपका स्वागत है। मुझे उम्मीद है कि आप जेनरेट किए गए ऑडियो का आनंद लेंगे।",
       voice: getInitialVoice(),
       styleInstructions: initialData?.styleInstructions ?? 'एक गर्म और मैत्रीपूर्ण स्वर में जोर से पढ़ें:',
-      pitch: initialData?.pitch ?? 1.0,
+      pitch: initialData?.pitch ?? 0.0,
       speed: initialData?.speed ?? 1.0,
     },
   });
@@ -193,7 +193,7 @@ export function VoiceSettingsForm({ isGenerating, onGenerate, initialData }: Voi
                     <FormControl>
                         <Slider
                             defaultValue={[value]}
-                            min={0.5} max={2.0} step={0.1}
+                            min={-10} max={10} step={0.5}
                             onValueChange={(vals) => onChange(vals[0])}
                             aria-label="Pitch"
                         />

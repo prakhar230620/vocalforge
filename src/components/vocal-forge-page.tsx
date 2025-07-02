@@ -27,7 +27,9 @@ export default function VocalForgePage() {
       const { audioDataUri } = await textToSpeech({ 
         text: improvedText, 
         voice: settings.voice,
-        styleInstructions: settings.styleInstructions
+        styleInstructions: settings.styleInstructions,
+        pitch: settings.pitch,
+        speed: settings.speed,
       });
       
       const newSpeech: SpeechHistoryItem = {
